@@ -15,9 +15,9 @@ def eulerian_magnification(video_filename, freq_min=0.833, freq_max=1, amplifica
     vid_data = temporal_bandpass_filter(vid_data, fps, freq_min=freq_min, freq_max=freq_max)
     print "Amplifying signal by factor of " + str(amplification)
     vid_data *= amplification
-    file_name, file_extension = os.path.splitext(video_filename)
+    file_name = os.path.splitext(video_filename)[0]
     combine_gaussian_and_save(vid_data, orig_vid, gauss_level, fps,
-                              save_filename=file_name + '.magnified.' + file_extension)
+                              save_filename=file_name + '_magnified.avi')
 
 
 def show_frequencies(video_filename, bounds=None):
