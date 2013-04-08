@@ -18,7 +18,18 @@ algorithm may help.  Some excellent videos sources can be found here: http://peo
 
 Once you've downloaded the video simply run::
 
-    eulerian_magnification('face.mp4', gauss_level=4, freq_min=50.0/60.0, freq_max=1.0, amplification=50)
+    eulerian_magnification('face.mp4', freq_min=50.0/60.0, freq_max=1.0, amplification=50)
+
+freq_min and freq_max specify the frequency in hertz that will be amplified. amplification specifies how much that
+signal will be amplified.
+
+It can take a while to find the best parameters for a specific video. To help with that there is the show_frequencies
+function::
+
+   show_frequencies('media/face.mp4')
+
+This will show a graph of the average value of the video as well as a graph of the signal strength at various
+frequencies.
 
 
 TODO
