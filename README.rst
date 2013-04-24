@@ -44,7 +44,7 @@ Pull requests welcome!
 Troubleshooting
 ---------------
 
-On my system it was neccesary to add C:\OpenCV2.3\build\x86\vc10\bin to the system path before videos would load
+On my system it was neccesary to add C:\\OpenCV2.3\\build\\x86\\vc10\\bin to the system path before videos would load
 properly.  Until then they would load as zero-length videos.
 
 Author
