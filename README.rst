@@ -41,6 +41,11 @@ Pull requests welcome!
  - Butterworth and IIR filters
  - Optimized memory usage to allow processing of larger files
 
+Troubleshooting
+---------------
+
+On my system it was neccesary to add C:\OpenCV2.3\build\x86\vc10\bin to the system path before videos would load
+properly.  Until then they would load as zero-length videos.
 
 Author
 ------
