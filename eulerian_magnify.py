@@ -1,7 +1,7 @@
 import cv2
 import os
 
-import cv
+import cv2.cv as cv
 import numpy
 import pylab
 import scipy.signal
