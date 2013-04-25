@@ -10,6 +10,10 @@ Requirements
   - Python 2.7
   - OpenCV, numpy, scipy, pylab
 
+On a windows machine make sure you install the 32-bit version of everything. You can download the needed libraries
+here http://www.lfd.uci.edu/~gohlke/pythonlibs/ Make sure you install the MKL version of numpy as the scipy binary
+depends on it.
+
 How to Use
 -----------
 
@@ -44,8 +48,19 @@ Pull requests welcome!
 Troubleshooting
 ---------------
 
-On my system it was neccesary to add C:\\OpenCV2.3\\build\\x86\\vc10\\bin to the system path before videos would load
-properly.  Until then they would load as zero-length videos.
+**When I process the video it looks all weird - alternating from bright to dark - what am I doing wrong?**
+
+Most likely the video you're trying to process just has too much movement. Try running it through a video stabelizer.
+Even with stablization, it can be hard to find the exact right frequency and amplification parameters to isolate the
+hiddne motion you're trying to display.
+
+Additionally, some videos are better suited to motion amplifcation using a laplacian pyramid. This has not yet been
+implemented in this library. The baby breathing video is a good example of a video better suited to this method.
+
+**Windows: IndexError: tuple index out of range**
+
+On windows it may be neccesary to add *C:\\OpenCV2.3\\build\\x86\\vc10\\bin* to the system path for videos to load
+properly.  Make sure you adjust the path to the actual location of your opencv library.
 
 Author
 ------
