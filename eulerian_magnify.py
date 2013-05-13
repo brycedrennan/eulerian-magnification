@@ -1,23 +1,26 @@
 import cv2
 import os
 
-import cv2.cv as cv
 import numpy
 import pylab
 import scipy.signal
 import scipy.fftpack
 
+import cv2.cv as cv
 
-def eulerian_magnification(video_filename, freq_min=0.833, freq_max=1, amplification=50, gauss_level=4):
+
+def eulerian_magnification(video_filename, image_processing='gaussian', freq_min=0.833, freq_max=1, amplification=50, pyramid_levels=4):
     """Amplify subtle variation in a video and save it to disk"""
     orig_vid, fps = load_video(video_filename)
-    vid_data = gaussian_video(orig_vid, gauss_level)
+    if image_processing == 'gaussian':
+        vid_data = gaussian_video(orig_vid, pyramid_levels)
+    elif image_processing == 'laplacian':
+        vid_data = laplacian_video(orig_vid, pyramid_levels)
     vid_data = temporal_bandpass_filter(vid_data, fps, freq_min=freq_min, freq_max=freq_max)
     print "Amplifying signal by factor of " + str(amplification)
     vid_data *= amplification
     file_name = os.path.splitext(video_filename)[0]
-    combine_gaussian_and_save(vid_data, orig_vid, gauss_level, fps,
-                              save_filename=file_name + '_magnified.avi')
+    combine_pyramid_and_save(vid_data, orig_vid, pyramid_levels, fps, save_filename=file_name + '_magnified.avi')
 
 
 def show_frequencies(video_filename, bounds=None):
@@ -112,7 +115,26 @@ def gaussian_video(video, shrink_multiple):
     return vid_data
 
 
-def combine_gaussian_and_save(g_video, orig_video, enlarge_multiple, fps, save_filename='media/output.avi'):
+def laplacian_video(video, shrink_multiple):
+    vid_data = None
+    for x in range(0, video.shape[0]):
+        frame = video[x]
+        gauss_copy = numpy.ndarray(shape=frame.shape, dtype="float")
+        gauss_copy[:] = frame
+
+        for i in range(shrink_multiple):
+            prev_copy = gauss_copy[:]
+            gauss_copy = cv2.pyrDown(gauss_copy)
+
+        laplacian = prev_copy - cv2.pyrUp(gauss_copy)
+
+        if x == 0:
+            vid_data = numpy.zeros((video.shape[0], laplacian.shape[0], laplacian.shape[1], 3))
+        vid_data[x] = laplacian
+    return vid_data
+
+
+def combine_pyramid_and_save(g_video, orig_video, enlarge_multiple, fps, save_filename='media/output.avi'):
     """Combine a gaussian video representation with the original and save to file"""
     width, height = get_frame_dimensions(orig_video[0])
     fourcc = cv.CV_FOURCC('M', 'J', 'P', 'G')
