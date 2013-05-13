@@ -22,7 +22,7 @@ algorithm may help.  Some excellent videos sources can be found here: http://peo
 
 Once you've downloaded the video simply run::
 
-    eulerian_magnification('face.mp4', freq_min=50.0/60.0, freq_max=1.0, amplification=50)
+    eulerian_magnification('media/face.mp4', image_processing='gaussian', gauss_level=3, freq_min=50.0 / 60.0, freq_max=1.0, amplification=50)
 
 freq_min and freq_max specify the frequency in hertz that will be amplified. amplification specifies how much that
 signal will be amplified.
@@ -41,7 +41,6 @@ TODO
 
 Pull requests welcome!
 
- - Laplacian Pyramid motion amplification
  - Butterworth and IIR filters
  - Optimized memory usage to allow processing of larger files
 
@@ -50,12 +49,11 @@ Troubleshooting
 
 **When I process the video it looks all weird - alternating from bright to dark - what am I doing wrong?**
 
-Most likely the video you're trying to process just has too much movement. Try running it through a video stabelizer.
-Even with stablization, it can be hard to find the exact right frequency and amplification parameters to isolate the
-hiddne motion you're trying to display.
+Most likely the video you're trying to process just has too much movement. Try running it through a video stabilizer.
+Even with stabilization, it can be hard to find the correct frequency and amplification parameters that isolate the
+hidden motion you're trying to display.
 
-Additionally, some videos are better suited to motion amplifcation using a laplacian pyramid. This has not yet been
-implemented in this library. The baby breathing video is a good example of a video better suited to this method.
+Additionally, some videos are better suited to motion amplification using a laplacian pyramid.
 
 **Windows: IndexError: tuple index out of range**
 
