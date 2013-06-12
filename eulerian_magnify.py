@@ -20,6 +20,7 @@ def eulerian_magnification(video_filename, image_processing='gaussian', freq_min
     print "Amplifying signal by factor of " + str(amplification)
     vid_data *= amplification
     file_name = os.path.splitext(video_filename)[0]
+    file_name = file_name + "_min"+str(freq_min)+"_max"+str(freq_max)+"_amp"+str(amplification)
     combine_pyramid_and_save(vid_data, orig_vid, pyramid_levels, fps, save_filename=file_name + '_magnified.avi')
 
 
