@@ -1,5 +1,6 @@
 import cv2
 import os
+import sys
 
 import numpy
 import pylab
@@ -11,7 +12,8 @@ import cv2.cv as cv
 
 def eulerian_magnification(video_filename, image_processing='gaussian', freq_min=0.833, freq_max=1, amplification=50, pyramid_levels=4):
     """Amplify subtle variation in a video and save it to disk"""
-    orig_vid, fps = load_video(video_filename)
+    path_to_video = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), video_filename)
+    orig_vid, fps = load_video(path_to_video)
     if image_processing == 'gaussian':
         vid_data = gaussian_video(orig_vid, pyramid_levels)
     elif image_processing == 'laplacian':
@@ -19,7 +21,7 @@ def eulerian_magnification(video_filename, image_processing='gaussian', freq_min
     vid_data = temporal_bandpass_filter(vid_data, fps, freq_min=freq_min, freq_max=freq_max)
     print "Amplifying signal by factor of " + str(amplification)
     vid_data *= amplification
-    file_name = os.path.splitext(video_filename)[0]
+    file_name = os.path.splitext(path_to_video)[0]
     file_name = file_name + "_min"+str(freq_min)+"_max"+str(freq_max)+"_amp"+str(amplification)
     combine_pyramid_and_save(vid_data, orig_vid, pyramid_levels, fps, save_filename=file_name + '_magnified.avi')
 
