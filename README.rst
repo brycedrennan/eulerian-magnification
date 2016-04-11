@@ -1,18 +1,15 @@
-Eulerian Video Magnification v0.1
-=================================
+Eulerian Video Magnification
+============================
 
 A tool to discover hidden variation in video.  This is based on the amazing research done at MIT:
 http://people.csail.mit.edu/mrub/vidmag/
 
 Requirements
 ------------
+  - OpenCV, numpy, scipy
 
-  - Python 2.7
-  - OpenCV, numpy, scipy, pylab
-
-On a windows machine make sure you install the 32-bit version of everything. You can download the needed libraries
-here http://www.lfd.uci.edu/~gohlke/pythonlibs/ Make sure you install the MKL version of numpy as the scipy binary
-depends on it.
+You can download the needed libraries here http://www.lfd.uci.edu/~gohlke/pythonlibs/ Make sure you install the MKL
+version of numpy as the scipy binary depends on it.
 
 How to Use
 -----------

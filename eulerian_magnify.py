@@ -3,11 +3,11 @@ import os
 import sys
 
 import numpy
-import pylab
+from matplotlib import pyplot
 import scipy.signal
 import scipy.fftpack
 
-import cv2.cv as cv
+# import cv2.cv as cv
 
 
 def eulerian_magnification(video_filename, image_processing='gaussian', freq_min=0.833, freq_max=1, amplification=50, pyramid_levels=4):
@@ -19,7 +19,7 @@ def eulerian_magnification(video_filename, image_processing='gaussian', freq_min
     elif image_processing == 'laplacian':
         vid_data = laplacian_video(orig_vid, pyramid_levels)
     vid_data = temporal_bandpass_filter(vid_data, fps, freq_min=freq_min, freq_max=freq_max)
-    print "Amplifying signal by factor of " + str(amplification)
+    print("Amplifying signal by factor of " + str(amplification))
     vid_data *= amplification
     file_name = os.path.splitext(path_to_video)[0]
     file_name = file_name + "_min"+str(freq_min)+"_max"+str(freq_max)+"_amp"+str(amplification)
@@ -29,7 +29,7 @@ def eulerian_magnification(video_filename, image_processing='gaussian', freq_min
 def show_frequencies(video_filename, bounds=None):
     """Graph the average value of the video as well as the frequency strength"""
     original_video, fps = load_video(video_filename)
-    print fps
+    print(fps)
     averages = []
 
     if bounds:
@@ -41,25 +41,25 @@ def show_frequencies(video_filename, bounds=None):
 
     charts_x = 1
     charts_y = 2
-    pylab.figure(figsize=(charts_y, charts_x))
-    pylab.subplots_adjust(hspace=.7)
+    pyplot.figure(figsize=(charts_y, charts_x))
+    pyplot.subplots_adjust(hspace=.7)
 
-    pylab.subplot(charts_y, charts_x, 1)
-    pylab.title("Pixel Average")
-    pylab.plot(averages)
+    pyplot.subplot(charts_y, charts_x, 1)
+    pyplot.title("Pixel Average")
+    pyplot.plot(averages)
 
     frequencies = scipy.fftpack.fftfreq(len(averages), d=1.0 / fps)
 
-    pylab.subplot(charts_y, charts_x, 2)
-    pylab.title("FFT")
-    pylab.axis([0, 15, -2000000, 5000000])
-    pylab.plot(frequencies, scipy.fftpack.fft(averages))
+    pyplot.subplot(charts_y, charts_x, 2)
+    pyplot.title("FFT")
+    pyplot.axis([0, 15, -2000000, 5000000])
+    pyplot.plot(frequencies, scipy.fftpack.fft(averages))
 
-    pylab.show()
+    pyplot.show()
 
 
 def temporal_bandpass_filter(data, fps, freq_min=0.833, freq_max=1, axis=0):
-    print "Applying bandpass between " + str(freq_min) + " and " + str(freq_max) + " Hz"
+    print("Applying bandpass between " + str(freq_min) + " and " + str(freq_max) + " Hz")
     fft = scipy.fftpack.fft(data, axis=axis)
     frequencies = scipy.fftpack.fftfreq(data.shape[0], d=1.0 / fps)
     bound_low = (numpy.abs(frequencies - freq_min)).argmin()
@@ -73,12 +73,12 @@ def temporal_bandpass_filter(data, fps, freq_min=0.833, freq_max=1, axis=0):
 
 def load_video(video_filename):
     """Load a video into a numpy array"""
-    print "Loading " + video_filename
+    print("Loading " + video_filename)
     # noinspection PyArgumentList
     capture = cv2.VideoCapture(video_filename)
-    frame_count = int(capture.get(cv.CV_CAP_PROP_FRAME_COUNT))
+    frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
     width, height = get_capture_dimensions(capture)
-    fps = int(capture.get(cv.CV_CAP_PROP_FPS))
+    fps = int(capture.get(cv2.CAP_PROP_FPS))
     x = 0
     orig_vid = numpy.zeros((frame_count, height, width, 3), dtype='uint8')
     while True:
@@ -95,7 +95,7 @@ def load_video(video_filename):
 
 def save_video(video, fps, save_filename='media/output.avi'):
     """Save a video to disk"""
-    fourcc = cv.CV_FOURCC('M', 'J', 'P', 'G')
+    fourcc = cv2.CAP_PROP_FOURCC('M', 'J', 'P', 'G')
     writer = cv2.VideoWriter(save_filename, fourcc, fps, (video.shape[2], video.shape[1]), 1)
     for x in range(0, video.shape[0]):
         res = cv2.convertScaleAbs(video[x])
@@ -140,7 +140,8 @@ def laplacian_video(video, shrink_multiple):
 def combine_pyramid_and_save(g_video, orig_video, enlarge_multiple, fps, save_filename='media/output.avi'):
     """Combine a gaussian video representation with the original and save to file"""
     width, height = get_frame_dimensions(orig_video[0])
-    fourcc = cv.CV_FOURCC('M', 'J', 'P', 'G')
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    print("Outputting to %s" % save_filename)
     writer = cv2.VideoWriter(save_filename, fourcc, fps, (width, height), 1)
     for x in range(0, g_video.shape[0]):
         img = numpy.ndarray(shape=g_video[x].shape, dtype='float')
@@ -155,8 +156,8 @@ def combine_pyramid_and_save(g_video, orig_video, enlarge_multiple, fps, save_fi
 
 def get_capture_dimensions(capture):
     """Get the dimensions of a capture"""
-    width = int(capture.get(cv.CV_CAP_PROP_FRAME_WIDTH))
-    height = int(capture.get(cv.CV_CAP_PROP_FRAME_HEIGHT))
+    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
     return width, height
 
 
