@@ -1,6 +1,8 @@
 # Eulerian Video Magnification
 
-A tool to discover hidden variation in video.  This is based on the amazing research done at MIT:
+Amplify tiny movements in video.
+
+Based on the amazing research done at MIT:
 http://people.csail.mit.edu/mrub/vidmag/
 
 ## Installation
