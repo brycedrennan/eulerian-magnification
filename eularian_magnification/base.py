@@ -7,8 +7,6 @@ from matplotlib import pyplot
 import scipy.signal
 import scipy.fftpack
 
-# import cv2.cv as cv
-
 
 def eulerian_magnification(video_filename, image_processing='gaussian', freq_min=0.833, freq_max=1, amplification=50, pyramid_levels=4):
     """Amplify subtle variation in a video and save it to disk"""
