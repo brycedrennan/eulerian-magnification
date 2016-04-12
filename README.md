@@ -1,48 +1,52 @@
-Eulerian Video Magnification
-============================
+# Eulerian Video Magnification
 
 A tool to discover hidden variation in video.  This is based on the amazing research done at MIT:
 http://people.csail.mit.edu/mrub/vidmag/
 
-Requirements
-------------
-  - OpenCV, numpy, scipy
+## Installation
+  - Install OpenCV
+  - `pip install eularian_magnification`
 
-You can download the needed libraries here http://www.lfd.uci.edu/~gohlke/pythonlibs/ Make sure you install the MKL
+## Requirements
+  - Python 3.5, untested on Python 2.7.
+  - OpenCV 3+.
+  - numpy, scipy, matplotlib
+
+On windows you can download the needed python dependencies [here](http://www.lfd.uci.edu/~gohlke/pythonlibs/). Make sure you install the MKL
 version of numpy as the scipy binary depends on it.
 
-How to Use
------------
+## Usage
 
 This technique works best with videos that have very little motion. Pre-processing a video through a stabilization
 algorithm may help.  Some excellent videos sources can be found here: http://people.csail.mit.edu/mrub/vidmag/
 
 Once you've downloaded the video simply run::
+```
+   from eulerian_magnification import eulerian_magnification
 
     eulerian_magnification('media/face.mp4', image_processing='gaussian', pyramid_levels=3, freq_min=50.0 / 60.0, freq_max=1.0, amplification=50)
 
-freq_min and freq_max specify the frequency in hertz that will be amplified. amplification specifies how much that
-signal will be amplified.
+```
+`freq_min` and `freq_max` specify the frequency in hertz that will be amplified. `amplification` specifies how much that signal will be amplified.
 
 It can take a while to find the best parameters for a specific video. To help with that there is the show_frequencies
 function::
 
+```
+   from eulerian_magnification import show_frequencies
+
    show_frequencies('media/face.mp4')
+```
 
 This will show a graph of the average value of the video as well as a graph of the signal strength at various
 frequencies.
 
-
-TODO
-------------
-
-Pull requests welcome!
-
+## Todo
  - Butterworth and IIR filters
  - Optimized memory usage to allow processing of larger files
 
-Troubleshooting
----------------
+## Troubleshooting
+
 
 **When I process the video it looks all weird - alternating from bright to dark - what am I doing wrong?**
 
@@ -54,10 +58,9 @@ Additionally, some videos are better suited to motion amplification using a lapl
 
 **Windows: IndexError: tuple index out of range**
 
-On windows it may be neccesary to add *C:\\OpenCV2.3\\build\\x86\\vc10\\bin* to the system path for videos to load
+On windows with OpenCv2 it may be necessary to add *C:\\OpenCV2.3\\build\\x86\\vc10\\bin* to the system path for videos to load
 properly.  Make sure you adjust the path to the actual location of your opencv library.
 
-Author
-------
+## Author
 
 Bryce Drennan <eulerian-magnify@brycedrennan.com>
