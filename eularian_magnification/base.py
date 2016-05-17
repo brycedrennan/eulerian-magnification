@@ -1,103 +1,72 @@
 import cv2
-import os
-import sys
-
-import numpy
-from matplotlib import pyplot
-import scipy.signal
+import numpy as np
 import scipy.fftpack
+import scipy.signal
+from matplotlib import pyplot
+
+from eularian_magnification.io import play_vid_data
+from eularian_magnification.pyramid import create_laplacian_video_pyramid, collapse_laplacian_video_pyramid
+from eularian_magnification.transforms import temporal_bandpass_filter
 
 
-def eulerian_magnification(video_filename, image_processing='gaussian', freq_min=0.833, freq_max=1, amplification=50, pyramid_levels=4):
-    """Amplify subtle variation in a video and save it to disk"""
-    path_to_video = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), video_filename)
-    orig_vid, fps = load_video(path_to_video)
-    if image_processing == 'gaussian':
-        vid_data = gaussian_video(orig_vid, pyramid_levels)
-    elif image_processing == 'laplacian':
-        vid_data = laplacian_video(orig_vid, pyramid_levels)
-    vid_data = temporal_bandpass_filter(vid_data, fps, freq_min=freq_min, freq_max=freq_max)
-    print("Amplifying signal by factor of " + str(amplification))
-    vid_data *= amplification
-    file_name = os.path.splitext(path_to_video)[0]
-    file_name = file_name + "_min"+str(freq_min)+"_max"+str(freq_max)+"_amp"+str(amplification)
-    combine_pyramid_and_save(vid_data, orig_vid, pyramid_levels, fps, save_filename=file_name + '_magnified.avi')
+def eulerian_magnification(vid_data, fps, freq_min, freq_max, amplification, pyramid_levels=4, skip_levels_at_top=2):
+    vid_pyramid = create_laplacian_video_pyramid(vid_data, pyramid_levels=pyramid_levels)
+    for i, vid in enumerate(vid_pyramid):
+        if i < skip_levels_at_top or i >= len(vid_pyramid) - 1:
+            # ignore the top and bottom of the pyramid. One end has too much noise and the other end is the
+            # gaussian representation
+            continue
+
+        bandpassed = temporal_bandpass_filter(vid, fps, freq_min=freq_min, freq_max=freq_max, amplification_factor=amplification)
+
+        play_vid_data(bandpassed)
+
+        vid_pyramid[i] += bandpassed
+        play_vid_data(vid_pyramid[i])
+
+    vid_data = collapse_laplacian_video_pyramid(vid_pyramid)
+    return vid_data
 
 
-def show_frequencies(video_filename, bounds=None):
+def show_frequencies(vid_data, fps, bounds=None):
     """Graph the average value of the video as well as the frequency strength"""
-    original_video, fps = load_video(video_filename)
-    print(fps)
     averages = []
 
     if bounds:
-        for x in range(1, original_video.shape[0] - 1):
-            averages.append(original_video[x, bounds[2]:bounds[3], bounds[0]:bounds[1], :].sum())
+        for x in range(1, vid_data.shape[0] - 1):
+            averages.append(vid_data[x, bounds[2]:bounds[3], bounds[0]:bounds[1], :].sum())
     else:
-        for x in range(1, original_video.shape[0] - 1):
-            averages.append(original_video[x, :, :, :].sum())
+        for x in range(1, vid_data.shape[0] - 1):
+            averages.append(vid_data[x, :, :, :].sum())
+
+    averages = averages - min(averages)
 
     charts_x = 1
     charts_y = 2
-    pyplot.figure(figsize=(charts_y, charts_x))
+    pyplot.figure(figsize=(20, 10))
     pyplot.subplots_adjust(hspace=.7)
 
     pyplot.subplot(charts_y, charts_x, 1)
     pyplot.title("Pixel Average")
+    pyplot.xlabel("Time")
+    pyplot.ylabel("Brightness")
     pyplot.plot(averages)
 
-    frequencies = scipy.fftpack.fftfreq(len(averages), d=1.0 / fps)
+    freqs = scipy.fftpack.fftfreq(len(averages), d=1.0 / fps)
+    fft = abs(scipy.fftpack.fft(averages))
+    idx = np.argsort(freqs)
 
     pyplot.subplot(charts_y, charts_x, 2)
     pyplot.title("FFT")
-    pyplot.axis([0, 15, -2000000, 5000000])
-    pyplot.plot(frequencies, scipy.fftpack.fft(averages))
+    pyplot.xlabel("Freq (Hz)")
+    freqs = freqs[idx]
+    fft = fft[idx]
+
+    freqs = freqs[len(freqs) / 2 + 1:]
+    fft = fft[len(fft) / 2 + 1:]
+    pyplot.plot(freqs, abs(fft))
 
     pyplot.show()
-
-
-def temporal_bandpass_filter(data, fps, freq_min=0.833, freq_max=1, axis=0):
-    print("Applying bandpass between " + str(freq_min) + " and " + str(freq_max) + " Hz")
-    fft = scipy.fftpack.fft(data, axis=axis)
-    frequencies = scipy.fftpack.fftfreq(data.shape[0], d=1.0 / fps)
-    bound_low = (numpy.abs(frequencies - freq_min)).argmin()
-    bound_high = (numpy.abs(frequencies - freq_max)).argmin()
-    fft[:bound_low] = 0
-    fft[bound_high:-bound_high] = 0
-    fft[-bound_low:] = 0
-
-    return scipy.fftpack.ifft(fft, axis=0)
-
-
-def load_video(video_filename):
-    """Load a video into a numpy array"""
-    print("Loading " + video_filename)
-    # noinspection PyArgumentList
-    capture = cv2.VideoCapture(video_filename)
-    frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
-    width, height = get_capture_dimensions(capture)
-    fps = int(capture.get(cv2.CAP_PROP_FPS))
-    x = 0
-    orig_vid = numpy.zeros((frame_count, height, width, 3), dtype='uint8')
-    while True:
-        _, frame = capture.read()
-
-        if frame == None or x >= frame_count:
-            break
-        orig_vid[x] = frame
-        x += 1
-    capture.release()
-
-    return orig_vid, fps
-
-
-def save_video(video, fps, save_filename='media/output.avi'):
-    """Save a video to disk"""
-    fourcc = cv2.CAP_PROP_FOURCC('M', 'J', 'P', 'G')
-    writer = cv2.VideoWriter(save_filename, fourcc, fps, (video.shape[2], video.shape[1]), 1)
-    for x in range(0, video.shape[0]):
-        res = cv2.convertScaleAbs(video[x])
-        writer.write(res)
 
 
 def gaussian_video(video, shrink_multiple):
@@ -105,33 +74,34 @@ def gaussian_video(video, shrink_multiple):
     vid_data = None
     for x in range(0, video.shape[0]):
         frame = video[x]
-        gauss_copy = numpy.ndarray(shape=frame.shape, dtype="float")
+        gauss_copy = np.ndarray(shape=frame.shape, dtype="float")
         gauss_copy[:] = frame
         for i in range(shrink_multiple):
             gauss_copy = cv2.pyrDown(gauss_copy)
 
         if x == 0:
-            vid_data = numpy.zeros((video.shape[0], gauss_copy.shape[0], gauss_copy.shape[1], 3))
+            vid_data = np.zeros((video.shape[0], gauss_copy.shape[0], gauss_copy.shape[1], 3))
         vid_data[x] = gauss_copy
     return vid_data
 
 
 def laplacian_video(video, shrink_multiple):
     vid_data = None
-    for x in range(0, video.shape[0]):
-        frame = video[x]
-        gauss_copy = numpy.ndarray(shape=frame.shape, dtype="float")
+    frame_count, height, width, colors = video.shape
+
+    for i, frame in enumerate(video):
+        gauss_copy = np.ndarray(shape=frame.shape, dtype="float")
         gauss_copy[:] = frame
 
-        for i in range(shrink_multiple):
+        for _ in range(shrink_multiple):
             prev_copy = gauss_copy[:]
             gauss_copy = cv2.pyrDown(gauss_copy)
 
         laplacian = prev_copy - cv2.pyrUp(gauss_copy)
 
-        if x == 0:
-            vid_data = numpy.zeros((video.shape[0], laplacian.shape[0], laplacian.shape[1], 3))
-        vid_data[x] = laplacian
+        if vid_data is None:
+            vid_data = np.zeros((frame_count, laplacian.shape[0], laplacian.shape[1], 3))
+        vid_data[i] = laplacian
     return vid_data
 
 
@@ -142,7 +112,7 @@ def combine_pyramid_and_save(g_video, orig_video, enlarge_multiple, fps, save_fi
     print("Outputting to %s" % save_filename)
     writer = cv2.VideoWriter(save_filename, fourcc, fps, (width, height), 1)
     for x in range(0, g_video.shape[0]):
-        img = numpy.ndarray(shape=g_video[x].shape, dtype='float')
+        img = np.ndarray(shape=g_video[x].shape, dtype='float')
         img[:] = g_video[x]
         for i in range(enlarge_multiple):
             img = cv2.pyrUp(img)
@@ -150,13 +120,6 @@ def combine_pyramid_and_save(g_video, orig_video, enlarge_multiple, fps, save_fi
         img[:height, :width] = img[:height, :width] + orig_video[x]
         res = cv2.convertScaleAbs(img[:height, :width])
         writer.write(res)
-
-
-def get_capture_dimensions(capture):
-    """Get the dimensions of a capture"""
-    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    return width, height
 
 
 def get_frame_dimensions(frame):

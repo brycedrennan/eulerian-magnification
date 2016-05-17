@@ -42,3 +42,5 @@ MANIFEST
 Icon?
 ehthumbs.db
 Thumbs.db
+/eulerian_source_videos
+.cache
