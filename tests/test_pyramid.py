@@ -1,8 +1,8 @@
 import numpy as np
 
-from eularian_magnification.base import eulerian_magnification
-from eularian_magnification.io import play_video, play_vid_data, play_pyramid, load_video_float, load_image
-from eularian_magnification.pyramid import create_gaussian_image_pyramid, create_laplacian_image_pyramid, \
+from eulerian_magnification.base import eulerian_magnification
+from eulerian_magnification.io import play_video, play_vid_data, play_pyramid, load_video_float, load_image
+from eulerian_magnification.pyramid import create_gaussian_image_pyramid, create_laplacian_image_pyramid, \
     create_gaussian_video_pyramid, create_laplacian_video_pyramid, collapse_laplacian_pyramid, \
     collapse_laplacian_video_pyramid
 
@@ -72,7 +72,7 @@ def test_collapse_laplacian_pyramid():
     assert (img == img_collapsed).all()
 
 
-def test_eularian_magnification():
+def test_eulerian_magnification():
     # ('baby', 10, 16, 0.4, 3, 30),
     orig_vid, fps = load_video_float(TEST_VIDEO_PATH)
     enhanced_vid = eulerian_magnification(orig_vid, fps=30, freq_max=0.77, freq_min=0.4, amplification=30)

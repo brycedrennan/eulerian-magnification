@@ -3,7 +3,7 @@ import os
 import cv2
 import numpy
 
-from eularian_magnification.transforms import uint8_to_float, float_to_uint8
+from eulerian_magnification.transforms import uint8_to_float, float_to_uint8
 
 
 def load_image(img_path):

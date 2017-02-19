@@ -7,7 +7,7 @@ http://people.csail.mit.edu/mrub/vidmag/
 
 ## Installation
   - Install OpenCV
-  - `pip install eularian_magnification`
+  - `pip install eulerian_magnification`
 
 ## Requirements
   - Python 3.5, untested on Python 2.7.

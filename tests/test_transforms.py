@@ -1,6 +1,6 @@
-from eularian_magnification.base import show_frequencies
-from eularian_magnification.io import _load_video, play_vid_data, load_image, load_video_float
-from eularian_magnification.transforms import uint8_to_float, float_to_uint8
+from eulerian_magnification.base import show_frequencies
+from eulerian_magnification.io import _load_video, play_vid_data, load_image, load_video_float
+from eulerian_magnification.transforms import uint8_to_float, float_to_uint8
 from .base import TEST_IMAGE_PATH, TEST_VIDEO_PATH
 
 

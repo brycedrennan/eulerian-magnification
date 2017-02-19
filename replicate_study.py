@@ -1,6 +1,6 @@
 import os
 import requests
-import eularian_magnification as em
+import eulerian_magnification as em
 
 # # show_frequencies('media/face.mp4')
 # # eulerian_magnification('media/face.mp4', image_processing='gaussian', pyramid_levels=3, freq_min=50.0 / 60.0, freq_max=1.0, amplification=50)
@@ -14,7 +14,7 @@ import eularian_magnification as em
 # # em.show_frequencies('media/wrist_magnified.avi')
 
 # http://people.csail.mit.edu/mrub/papers/vidmag.pdf
-from eularian_magnification.io import save_video, load_video_float
+from eulerian_magnification.io import save_video, load_video_float
 
 PAPER_REPLICATION_VALUES = [
     # name, amplification_factor, cutoff, lower_hertz, upper_hertz, framerate
