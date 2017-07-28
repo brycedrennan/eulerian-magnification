@@ -4,7 +4,7 @@ import scipy.fftpack
 import scipy.signal
 from matplotlib import pyplot
 
-from eulerian_magnification.io import play_vid_data
+# from eulerian_magnification.io import play_vid_data
 from eulerian_magnification.pyramid import create_laplacian_video_pyramid, collapse_laplacian_video_pyramid
 from eulerian_magnification.transforms import temporal_bandpass_filter
 
@@ -19,10 +19,10 @@ def eulerian_magnification(vid_data, fps, freq_min, freq_max, amplification, pyr
 
         bandpassed = temporal_bandpass_filter(vid, fps, freq_min=freq_min, freq_max=freq_max, amplification_factor=amplification)
 
-        play_vid_data(bandpassed)
+        # play_vid_data(bandpassed)
 
         vid_pyramid[i] += bandpassed
-        play_vid_data(vid_pyramid[i])
+        # play_vid_data(vid_pyramid[i])
 
     vid_data = collapse_laplacian_video_pyramid(vid_pyramid)
     return vid_data
