@@ -45,5 +45,7 @@ Thumbs.db
 /eulerian_source_videos
 .cache
 
+MANIFEST
 .direnv
-eulerian_magnification.egg
+eulerian_magnification.egg-info
+dist

@@ -1,6 +1,6 @@
-from distutils.core import setup
+from setuptools import setup
 
-__version__ = '0.21'
+__version__ = '0.22'
 
 setup(
     name='eulerian-magnification',
