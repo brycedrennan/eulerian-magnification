@@ -1,5 +1,6 @@
 from distutils.core import setup
-from eulerian_magnification import __version__
+
+__version__ = '0.21'
 
 setup(
     name='eulerian-magnification',
@@ -13,5 +14,5 @@ setup(
     license='MIT',
     description='Amplify tiny movements in video.',
     long_description='Amplify tiny movements in video.',
-    install_requires=['numpy==1.11.0', 'requests>=2.10.0', 'scipy=0.17.0'],
+    install_requires=['numpy>=1.11.0', 'requests>=2.10.0', 'scipy>=0.17.0', 'matplotlib'],
 )
