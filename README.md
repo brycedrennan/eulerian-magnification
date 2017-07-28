@@ -7,7 +7,7 @@ http://people.csail.mit.edu/mrub/vidmag/
 
 ## Installation
   - Install OpenCV
-  - `pip install eulerian_magnification`
+  - `pip install eulerian-magnification`
   
   or
   
@@ -74,6 +74,15 @@ Additionally, some videos are better suited to motion amplification using a lapl
 
 On windows with OpenCv2 it may be necessary to add *C:\\OpenCV2.3\\build\\x86\\vc10\\bin* to the system path for videos to load
 properly.  Make sure you adjust the path to the actual location of your opencv library.
+
+## Push to Pypi
+
+    git tag 0.22
+    git push --tags
+    python setup.py sdist
+    twine upload dist/*
+    rm dist -r
+
 
 ## Author
 
