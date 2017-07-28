@@ -5,7 +5,6 @@ from eulerian_magnification.io import play_video, play_vid_data, play_pyramid, l
 from eulerian_magnification.pyramid import create_gaussian_image_pyramid, create_laplacian_image_pyramid, \
     create_gaussian_video_pyramid, create_laplacian_video_pyramid, collapse_laplacian_pyramid, \
     collapse_laplacian_video_pyramid
-
 from .base import TEST_IMAGE_PATH, TEST_VIDEO_PATH, display_image, display_image_pyramid
 
 
@@ -34,7 +33,7 @@ def test_create_laplacian_image_pyramid():
     pyramid = create_laplacian_image_pyramid(img, pyramid_depth)
     display_image_pyramid(pyramid)
 
-    means = [np.average(f) for f in pyramid]
+    # means = [np.average(f) for f in pyramid]
     deviations = [np.std(f) for f in pyramid]
 
     assert len(pyramid) == pyramid_depth
@@ -77,6 +76,3 @@ def test_eulerian_magnification():
     orig_vid, fps = load_video_float(TEST_VIDEO_PATH)
     enhanced_vid = eulerian_magnification(orig_vid, fps=30, freq_max=0.77, freq_min=0.4, amplification=30)
     play_vid_data(enhanced_vid)
-
-
-

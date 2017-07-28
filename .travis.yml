@@ -1,0 +1,10 @@
+sudo: required
+services:
+  - docker
+install: docker build -t eulerian .
+jobs:
+  include:
+    - stage: test
+      script: docker run -t eulerian pylama
+    -
+      script: docker run -t eulerian pytest

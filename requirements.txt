@@ -1,5 +1,12 @@
-# opencv from http://www.lfd.uci.edu/~gohlke/pythonlibs/#opencv
-numpy==1.11.0
-scipy==0.17.0
-requests
-pytest
+# dev requirements
+pytest  # testing
+
+# linters
+pydocstyle
+pylint
+pylama
+pylama_pylint
+tox
+
+# install production dependencies from setup.py
+-e .
