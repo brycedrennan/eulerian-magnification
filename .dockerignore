@@ -1,4 +1,15 @@
 .direnv
-eulerian_magnification.egg
 .git
 .idea
+.cache
+.dockerignore
+.envrc
+.gitignore
+dist
+eulerian_magnification.egg-info
+.travis.yml
+MANIFEST
+LICENSE.txt
+Dockerfile
+README.md
+*/__pycache__

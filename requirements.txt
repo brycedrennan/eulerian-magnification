@@ -1,5 +1,6 @@
 # dev requirements
 pytest  # testing
+requests  # download sample videos
 
 # linters
 pydocstyle
