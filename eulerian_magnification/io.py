@@ -7,12 +7,14 @@ from eulerian_magnification.transforms import uint8_to_float, float_to_uint8
 
 
 def load_image(img_path):
+    img_path = str(img_path)
     img = cv2.imread(img_path)
     return uint8_to_float(img)
 
 
 def _load_video(video_filename):
     """Load a video into a numpy array"""
+    video_filename = str(video_filename)
     print("Loading " + video_filename)
     if not os.path.isfile(video_filename):
         raise Exception("File Not Found: %s" % video_filename)

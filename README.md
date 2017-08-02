@@ -31,7 +31,7 @@ Once you've downloaded the video simply run::
 
     import eulerian_magnification as em
 
-    vid, fps = load_video_float(source_path)
+    vid, fps = em.load_video_float(source_path)
     em.eulerian_magnification(vid, fps, 
             freq_min=50.0 / 60.0,
             freq_max=1.0,
@@ -48,7 +48,7 @@ function::
 
     import eulerian_magnification as em
     
-    vid, fps = load_video_float(source_path)
+    vid, fps = em.load_video_float(source_path)
     em.show_frequencies(vid, fps)
 
 

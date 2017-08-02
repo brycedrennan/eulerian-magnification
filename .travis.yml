@@ -5,6 +5,6 @@ install: docker build -t eulerian .
 jobs:
   include:
     - stage: test
-      script: docker run -t eulerian pylama
+      script: docker run -it eulerian pylama
     -
-      script: docker run -t eulerian pytest
+      script: docker run -it eulerian pytest
