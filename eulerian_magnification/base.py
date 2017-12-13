@@ -62,8 +62,8 @@ def show_frequencies(vid_data, fps, bounds=None):
     freqs = freqs[idx]
     fft = fft[idx]
 
-    freqs = freqs[len(freqs) / 2 + 1:]
-    fft = fft[len(fft) / 2 + 1:]
+    freqs = freqs[len(freqs) // 2 + 1:]
+    fft = fft[len(fft) // 2 + 1:]
     pyplot.plot(freqs, abs(fft))
 
     pyplot.show()
