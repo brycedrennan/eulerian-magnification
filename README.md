@@ -11,7 +11,7 @@ http://people.csail.mit.edu/mrub/vidmag/
   
   or
   
-    docker build -t eulerian -t
+    docker build -t eulerian .
     docker run -it eulerian /bin/bash
 
 ## Requirements
