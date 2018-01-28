@@ -5,6 +5,8 @@ Amplify tiny movements in video.
 Based on the amazing research done at MIT:
 http://people.csail.mit.edu/mrub/vidmag/
 
+** Warning from the author: This code is not in a working state. **  I'm slowly adding testing to identify whats wrong, but this project is very low priority.  Pull-requests welcome!
+
 ## Installation
   - Install OpenCV
   - `pip install eulerian-magnification`
